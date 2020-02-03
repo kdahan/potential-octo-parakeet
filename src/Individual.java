@@ -3,35 +3,38 @@ import java.util.Collections;
 
 public class Individual {
 
-    private Element[] gene;
+    private static Element[] elements = ElementParser.getElements();
+
+    private boolean[] gene;
     private int score;
 
     public Individual(){
-        gene = ElementParser.getElements();
+        gene = new boolean[elements.length];
+        for (int i = 0; i < gene.length; i++) {
+            gene[i] = Math.random() < .3;
+        }
         calcScore();
     }
 
     public Individual(Individual orig){
-        gene = new ArrayList<>();
-
+        gene = new boolean[elements.length];
+        for (int i = 0; i < gene.length; i++) {
+            gene[i] = orig.gene[i];
+        }
         calcScore();
     }
 
     public void calcScore(){
         double total = 0;
-        for (int i = 0; i < gene.size()-1; i++) {
-            total += gene.get(i).distanceTo(gene.get(i+1));
-        }
-        total += gene.get(0).distanceTo(gene.get(gene.size()-1));
 
-        score = (int)total;
     }
+
     public void mutate(double rate){
         while(Math.random() < rate) {
             int j;
-            int i = (int) (Math.random() * gene.size());
+            int i = (int) (Math.random() * gene.length);
             do {
-                j = (int) (Math.random() * gene.size());
+                j = (int) (Math.random() * gene.length);
             } while (j == i);
             Collections.swap(gene, i, j);
         }
@@ -42,7 +45,7 @@ public class Individual {
         return score;
     }
 
-    public ArrayList<City> getGene() {
+    public boolean[] getGene() {
         return gene;
     }
 
